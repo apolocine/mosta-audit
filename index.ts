@@ -17,4 +17,4 @@ export type {
   AuditParams,
   AuditFilters,
   AuditLogDTO,
-} from './types'
+} from './types/index'

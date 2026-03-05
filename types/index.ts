@@ -2,10 +2,6 @@
 // Author: Dr Hamid MADANI drmdh@msn.com
 
 export interface MostaAuditConfig {
-  /** Collection/table name (default: 'auditlogs') */
-  collection?: string
-  /** Retention in days, 0 = unlimited (default: 0) */
-  retentionDays?: number
   /** Known modules for UI filters */
   modules?: string[]
   /** Known actions for UI filters */

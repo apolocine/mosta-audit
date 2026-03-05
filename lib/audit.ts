@@ -1,8 +1,12 @@
 // @mosta/audit — Core audit functions
 // Author: Dr Hamid MADANI drmdh@msn.com
-import { getDialect } from '@mostajs/orm'
+import { getDialect, registerSchemas } from '@mostajs/orm'
 import { AuditLogRepository } from '../repositories/audit-log.repository'
-import type { AuditParams } from '../types'
+import { AuditLogSchema } from '../schemas/audit-log.schema'
+import type { AuditParams } from '../types/index'
+
+// Auto-register audit schema into ORM registry (idempotent)
+registerSchemas([AuditLogSchema])
 
 /**
  * Log an audit entry. Fire-and-forget — never throws, never blocks.

@@ -3,7 +3,7 @@
 import { BaseRepository } from '@mostajs/orm'
 import { AuditLogSchema } from '../schemas/audit-log.schema'
 import type { IDialect, FilterQuery, QueryOptions } from '@mostajs/orm'
-import type { AuditLogDTO, AuditFilters } from '../types'
+import type { AuditLogDTO, AuditFilters } from '../types/index'
 
 export class AuditLogRepository extends BaseRepository<AuditLogDTO> {
   constructor(dialect: IDialect) {
