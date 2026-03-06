@@ -11,6 +11,9 @@ export { AuditLogSchema } from './schemas/audit-log.schema'
 // API helpers
 export { createAuditHandlers } from './api/route'
 
+// Menu contribution
+export { auditMenuContribution } from './lib/menu'
+
 // Types
 export type {
   MostaAuditConfig,
