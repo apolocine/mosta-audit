@@ -1,0 +1,20 @@
+{
+  "_doc": "Manifeste de câblage pour @mostajs/audit",
+  "package": "@mostajs/audit",
+  "version": "1.0.3",
+  "type": "functional",
+
+  "schemas": {
+    "from": "@mostajs/audit",
+    "exports": ["AuditLogSchema"]
+  },
+
+  "repositories": [
+    { "class": "AuditLogRepository", "type": "AuditLogDTO", "factory": "auditLogRepo", "from": "@mostajs/audit" }
+  ],
+
+  "menu": {
+    "name": "auditMenuContribution",
+    "from": "@mostajs/audit/lib/menu"
+  }
+}

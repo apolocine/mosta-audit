@@ -1,6 +1,6 @@
 {
   "name": "@mostajs/audit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Reusable audit logging module — fire-and-forget logAudit() with paginated consultation",
   "author": "Dr Hamid MADANI <drmdh@msn.com>",
   "license": "MIT",
@@ -36,6 +36,7 @@
   },
   "files": [
     "dist",
+    "audit.wire.json",
     "LICENSE",
     "README.md"
   ],
