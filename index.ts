@@ -14,6 +14,12 @@ export { createAuditHandlers } from './api/route'
 // Menu contribution
 export { auditMenuContribution } from './lib/menu'
 
+// Pages
+export { default as AuditPage } from './pages/AuditPage'
+
+// I18n
+export { t as auditT } from './lib/i18n'
+
 // Types
 export type {
   MostaAuditConfig,
