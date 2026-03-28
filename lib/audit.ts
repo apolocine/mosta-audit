@@ -1,19 +1,15 @@
 // @mosta/audit — Core audit functions
 // Author: Dr Hamid MADANI drmdh@msn.com
-import { getDialect, registerSchemas } from '@mostajs/orm'
-import { AuditLogRepository } from '../repositories/audit-log.repository'
-import { AuditLogSchema } from '../schemas/audit-log.schema'
-import type { AuditParams } from '../types/index'
 
-// Auto-register audit schema into ORM registry (idempotent)
-registerSchemas([AuditLogSchema])
+import { getAuditRepo } from './audit-factory.js'
+import type { AuditParams } from '../types/index.js'
 
 /**
  * Log an audit entry. Fire-and-forget — never throws, never blocks.
  */
 export async function logAudit(params: AuditParams): Promise<void> {
   try {
-    const repo = new AuditLogRepository(await getDialect())
+    const repo = await getAuditRepo()
     await repo.create({
       userId: params.userId,
       userName: params.userName,

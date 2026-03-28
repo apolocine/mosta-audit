@@ -2,7 +2,7 @@
 // Author: Dr Hamid MADANI drmdh@msn.com
 // Bare handler — NO auth. The socle catch-all does it via permission.
 
-import { AuditLogRepository } from '../../repositories/audit-log.repository.js'
+import { getAuditRepo } from '../audit-factory.js'
 
 export async function GET(req: Request): Promise<Response> {
   const url = new URL(req.url)
@@ -15,10 +15,7 @@ export async function GET(req: Request): Promise<Response> {
   const dateFrom = url.searchParams.get('dateFrom') || url.searchParams.get('from') || null
   const dateTo = url.searchParams.get('dateTo') || url.searchParams.get('to') || null
 
-  const { getDialect } = await import('@mostajs/orm')
-  const dialect = await getDialect()
-  const repo = new AuditLogRepository(dialect)
-
+  const repo = await getAuditRepo()
   const { data: logs, total } = await repo.findPaginated({
     module, action, userId, status,
     from: dateFrom ? new Date(dateFrom) : undefined,
