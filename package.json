@@ -1,6 +1,6 @@
 {
   "name": "@mostajs/audit",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Reusable audit logging module — fire-and-forget logAudit() with paginated consultation",
   "author": "Dr Hamid MADANI <drmdh@msn.com>",
   "license": "MIT",
@@ -52,6 +52,21 @@
       "types": "./dist/lib/module-info.d.ts",
       "import": "./dist/lib/module-info.js",
       "default": "./dist/lib/module-info.js"
+    },
+    "./lib/export": {
+      "types": "./dist/lib/export.d.ts",
+      "import": "./dist/lib/export.js",
+      "default": "./dist/lib/export.js"
+    },
+    "./lib/audit-stats": {
+      "types": "./dist/lib/audit-stats.d.ts",
+      "import": "./dist/lib/audit-stats.js",
+      "default": "./dist/lib/audit-stats.js"
+    },
+    "./lib/handlers/audit-export": {
+      "types": "./dist/lib/handlers/audit-export.d.ts",
+      "import": "./dist/lib/handlers/audit-export.js",
+      "default": "./dist/lib/handlers/audit-export.js"
     }
   },
   "files": [
@@ -119,6 +134,7 @@
   },
   "dependencies": {
     "@mostajs/net": "^2.0.0",
+    "@mostajs/octoswitcher": "^1.0.0",
     "@mostajs/orm": "^1.7.0"
   }
 }
