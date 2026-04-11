@@ -1,0 +1,12 @@
+{
+  "name": "audit",
+  "package": "@mostajs/audit",
+  "version": "2.0.0",
+  "type": "core",
+  "priority": 5,
+  "dependencies": ["auth"],
+  "displayName": "Audit",
+  "description": "Audit logging — activity journal with filtering and pagination",
+  "icon": "FileText",
+  "register": "./dist/register.js"
+}

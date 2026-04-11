@@ -14,6 +14,24 @@ export { createAuditHandlers } from './api/route'
 // Menu contribution
 export { auditMenuContribution } from './lib/menu'
 
+// Pages
+export { default as AuditPage } from './pages/AuditPage'
+
+// I18n
+export { t as auditT } from './lib/i18n'
+
+// Cloud modules
+// Export
+export { auditToCsv, auditToJson } from './lib/export'
+export type { ExportOptions } from './lib/export'
+
+// Export handler
+export { createAuditExportHandler } from './lib/handlers/audit-export'
+
+// Audit stats
+export { getAuditStats } from './lib/audit-stats'
+export type { AuditStats } from './lib/audit-stats'
+
 // Types
 export type {
   MostaAuditConfig,

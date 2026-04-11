@@ -1,15 +1,8 @@
 // @mosta/audit — API Route template
 // Author: Dr Hamid MADANI drmdh@msn.com
-//
-// Copy to: src/app/api/admin/audit/route.ts
-// Usage:
-//   import { createAuditHandlers } from '@mosta/audit/api/route'
-//   import { checkPermission } from '@mosta/auth'
-//   export const { GET } = createAuditHandlers('audit:view', checkPermission)
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getDialect } from '@mostajs/orm'
-import { AuditLogRepository } from '../repositories/audit-log.repository'
+import { getAuditRepo } from '../lib/audit-factory.js'
 
 type PermissionChecker = (permission: string) => Promise<{
   error: NextResponse | null
@@ -39,7 +32,7 @@ export function createAuditHandlers(
       limit: parseInt(url.searchParams.get('limit') || '50', 10),
     }
 
-    const repo = new AuditLogRepository(await getDialect())
+    const repo = await getAuditRepo()
     const { data, total } = await repo.findPaginated(filters)
 
     return NextResponse.json({

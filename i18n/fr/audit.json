@@ -1,0 +1,29 @@
+{
+  "_author": "Dr Hamid MADANI drmdh@msn.com",
+  "title": "Journal d'audit",
+  "fields": {
+    "timestamp": "Date/Heure",
+    "user": "Utilisateur",
+    "action": "Action",
+    "module": "Module",
+    "resource": "Ressource",
+    "status": "Statut",
+    "details": "D\u00e9tails"
+  },
+  "filters": {
+    "module": "Module",
+    "action": "Rechercher action..."
+  },
+  "modules": {
+    "clients": "Clients",
+    "tickets": "Tickets",
+    "scan": "Scan",
+    "lockers": "Vestiaires",
+    "rfid": "RFID",
+    "access": "Acc\u00e8s",
+    "users": "Utilisateurs",
+    "activities": "Activit\u00e9s",
+    "plans": "Plans",
+    "settings": "Param\u00e8tres"
+  }
+}
