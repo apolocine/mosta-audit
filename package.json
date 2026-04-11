@@ -1,6 +1,6 @@
 {
   "name": "@mostajs/audit",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Reusable audit logging module — fire-and-forget logAudit() with paginated consultation",
   "author": "Dr Hamid MADANI <drmdh@msn.com>",
   "license": "MIT",
@@ -136,5 +136,9 @@
     "@mostajs/net": "^2.0.0",
     "@mostajs/octoswitcher": "^1.0.0",
     "@mostajs/orm": "^1.7.0"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/apolocine"
   }
 }
