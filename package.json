@@ -3,7 +3,7 @@
   "version": "2.1.1",
   "description": "Reusable audit logging module — fire-and-forget logAudit() with paginated consultation",
   "author": "Dr Hamid MADANI <drmdh@msn.com>",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
