@@ -1,0 +1,109 @@
+# @mostajs/audit — fiche LLM
+> Journalisation d'audit fire-and-forget : logAudit() non bloquant + consultation paginée, stats, export CSV/JSON.
+
+- Version: 2.2.2 · Licence: AGPL-3.0-or-later · Auteur: Dr Hamid MADANI <drmdh@msn.com>
+- Chemin: mostajs/mosta-audit · Statut audit: complet (dist/)
+
+## RÔLE
+Module de journalisation d'audit de l'écosystème mostajs. Expose un `logAudit()` fire-and-forget — il ne lève jamais d'exception et ne bloque jamais le flux appelant — pour tracer les actions métier (création, modification, suppression…). Fournit la consultation paginée et filtrée des logs (handler API Next.js), un export CSV/JSON, des statistiques agrégées, une page d'administration et un logger debug volatile complémentaire (stdout/pm2). Fonctionne en mode ORM ou NET selon `MOSTA_DATA`.
+
+## INSTALLATION
+npm i @mostajs/audit @mostajs/orm
+
+## EXPORTS
+Point d'entrée racine (`.`) :
+- Core: logAudit, getAuditUser
+- Debug logger: dlog, dwarn, createLogger, isDebugEnabled
+- Repository/Schéma: AuditLogRepository, AuditLogSchema
+- API: createAuditHandlers, createAuditExportHandler
+- Export: auditToCsv, auditToJson
+- Stats: getAuditStats
+- Menu/i18n/Page: auditMenuContribution, auditT, AuditPage (default)
+- Types: MostaAuditConfig, AuditParams, AuditFilters, AuditLogDTO, ExportOptions, AuditStats, ScopedLogger
+
+## EXPORTS PAR SOUS-CHEMIN
+- `./lib/audit` — logAudit, getAuditUser
+- `./api/route` — createAuditHandlers
+- `./types` — MostaAuditConfig, AuditParams, AuditFilters, AuditLogDTO
+- `./lib/menu` — auditMenuContribution
+- `./register` — register(registry)
+- `./pages/AuditPage` — page d'administration
+- `./lib/i18n` — t (auditT)
+- `./lib/module-info` — getSchemas, moduleInfo (pour @mostajs/setup)
+- `./lib/export` — auditToCsv, auditToJson ; type ExportOptions
+- `./lib/audit-stats` — getAuditStats ; type AuditStats
+- `./lib/handlers/audit-export` — createAuditExportHandler
+- `./lib/debug-log` — dlog, dwarn, createLogger, isDebugEnabled ; type ScopedLogger
+- `./schemas/audit-log.schema` — AuditLogSchema
+- `./repositories/audit-log.repository` — AuditLogRepository
+
+## API — SIGNATURES
+logAudit(params: AuditParams): Promise<void>  // fire-and-forget : ne throw jamais, ne bloque jamais
+getAuditUser(session: any): { userId, userName, userRole }  // extrait d'une session NextAuth
+createAuditHandlers(permission: string, checkPermission: PermissionChecker): { GET }  // consultation paginée
+createAuditExportHandler(...)  // handler d'export
+auditToCsv(logs: any[]): string  · auditToJson(logs: any[]): string
+getAuditStats(repo: any, days?: number): Promise<AuditStats>
+dlog(scope, data): void  // actif si MOSTAJS_DEBUG=1 ou hors prod
+dwarn(scope, data): void  // toujours actif
+createLogger(namespace: string): ScopedLogger  // { dlog, dwarn }
+isDebugEnabled(): boolean
+
+AuditLogRepository extends BaseRepository<AuditLogDTO> (dialect: IDialect) :
+  findPaginated(filters?: AuditFilters, options?): Promise<{ data: AuditLogDTO[], total: number }>
+  findByResource(resourceId, modules?, options?): Promise<AuditLogDTO[]>
+  deleteOlderThan(days: number): Promise<number>  // rétention / purge
+
+PermissionChecker = (permission: string) => Promise<{ error: NextResponse|null, session: any }>
+
+## TYPES CLÉS
+AuditParams { userId, userName, userRole, action, module, resource?, resourceId?, details?:Record<string,any>, ipAddress?, status?:'success'|'failure' }
+AuditLogDTO { id, userId, userName, userRole, action, module, resource, resourceId, details:Record|null, ipAddress, status:'success'|'failure', timestamp }
+AuditFilters { module?, action?, userId?, status?, from?:Date, to?:Date, page?, limit? }
+MostaAuditConfig { modules?:string[], actions?:string[] }  // valeurs pour les filtres UI
+AuditStats { totalLogs, byModule:Record<string,number>, byAction:Record<string,number>, byStatus:{success,failure}, topUsers:[{userName,count}], recentErrors[] }
+ExportOptions { format:'csv'|'json', from?, to?, module?, action?, limit? }
+ScopedLogger { dlog(scope,data), dwarn(scope,data) }
+
+## PATTERN
+```ts
+// Tracer une action
+import { logAudit, getAuditUser } from '@mostajs/audit'
+await logAudit({
+  ...getAuditUser(session),
+  action: 'user_create',
+  module: 'users',
+  resource: 'John Doe',
+  resourceId: user.id,
+  details: { email: 'john@x.com' },
+  status: 'success',
+})
+
+// Route de consultation Next.js
+import { createAuditHandlers } from '@mostajs/audit/api/route'
+export const { GET } = createAuditHandlers('audit:view', checkPermission)
+// GET /api/audit-log?page=1&limit=50&module=users&action=create
+
+// Purge de rétention
+const repo = new AuditLogRepository(await getDialect())
+await repo.deleteOlderThan(90)
+```
+
+## DÉPEND DE
+- @mostajs/orm (dependency) — BaseRepository, IDialect, QueryOptions.
+- @mostajs/net (dependency) — accès en mode NET.
+- @mostajs/octoswitcher (dependency) — bascule ORM/NET.
+- Peers (tous optionnels) : @mostajs/menu, @mostajs/socle, @mostajs/ui, lucide-react, next, react.
+
+## PIÈGES
+- logAudit est volontairement fire-and-forget : il avale ses propres erreurs (échec d'écriture audit → silencieux). Ne pas s'en servir comme garantie transactionnelle ; ne pas l'attendre comme bloquant critique.
+- logAudit ≠ debug-log : `logAudit` persiste en DB ; `dlog`/`dwarn` ne font que tracer en stdout (volatile, pour pm2). dlog n'est actif que si `MOSTAJS_DEBUG=1` ou hors production ; dwarn est toujours actif.
+- createAuditHandlers exige une callback `checkPermission` (typiquement fournie par `@mostajs/auth`) ; le module ne gère pas la session.
+- Le mode de données (ORM/NET) est piloté par `MOSTA_DATA` ; le repo factory interne lit l'environnement automatiquement.
+- getAuditUser attend une session de forme NextAuth ; si la forme diffère, fournir manuellement userId/userName/userRole.
+- deleteOlderThan supprime définitivement les lignes : prévoir l'archivage avant purge si rétention légale.
+
+## RÉFÉRENCES
+- README.md (racine du module)
+- audit.wire.json, wire.json — déclaration de câblage
+- LICENSE (AGPL-3.0-or-later)

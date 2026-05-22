@@ -1,6 +1,6 @@
 {
   "name": "@mostajs/audit",
-  "version": "2.1.2",
+  "version": "2.2.2",
   "description": "Reusable audit logging module — fire-and-forget logAudit() with paginated consultation",
   "author": "Dr Hamid MADANI <drmdh@msn.com>",
   "license": "AGPL-3.0-or-later",
@@ -67,6 +67,21 @@
       "types": "./dist/lib/handlers/audit-export.d.ts",
       "import": "./dist/lib/handlers/audit-export.js",
       "default": "./dist/lib/handlers/audit-export.js"
+    },
+    "./lib/debug-log": {
+      "types": "./dist/lib/debug-log.d.ts",
+      "import": "./dist/lib/debug-log.js",
+      "default": "./dist/lib/debug-log.js"
+    },
+    "./schemas/audit-log.schema": {
+      "types": "./dist/schemas/audit-log.schema.d.ts",
+      "import": "./dist/schemas/audit-log.schema.js",
+      "default": "./dist/schemas/audit-log.schema.js"
+    },
+    "./repositories/audit-log.repository": {
+      "types": "./dist/repositories/audit-log.repository.d.ts",
+      "import": "./dist/repositories/audit-log.repository.js",
+      "default": "./dist/repositories/audit-log.repository.js"
     }
   },
   "files": [
@@ -75,7 +90,8 @@
     "wire.json",
     "audit.wire.json",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "llms.txt"
   ],
   "keywords": [
     "audit",
