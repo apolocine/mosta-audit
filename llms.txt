@@ -89,11 +89,32 @@ const repo = new AuditLogRepository(await getDialect())
 await repo.deleteOlderThan(90)
 ```
 
-## DÉPEND DE
-- @mostajs/orm (dependency) — BaseRepository, IDialect, QueryOptions.
-- @mostajs/net (dependency) — accès en mode NET.
-- @mostajs/octoswitcher (dependency) — bascule ORM/NET.
-- Peers (tous optionnels) : @mostajs/menu, @mostajs/socle, @mostajs/ui, lucide-react, next, react.
+## INTÉGRATION (DI-first, depuis le .env de l'hôte) — depuis 2.3.0
+`getAuditRepo()`/`logAudit()` résolvent le dialecte ainsi :
+1. **Injecté** par l'hôte (RECOMMANDÉ) : `configureAudit({ dialect })` — zéro résolveur, copie ORM unique.
+2. **Repli** : `@mostajs/data-plug` (`getDialect()` lit le `.env` de l'hôte) — remplace octoswitcher, optionnel.
+```ts
+import { configureAudit } from '@mostajs/audit'            // ou '@mostajs/audit/lib/audit-factory'
+import { logAudit } from '@mostajs/audit/lib/audit'
+import { AuditLogSchema } from '@mostajs/audit/schemas/audit-log.schema'
+import { AuditLogRepository } from '@mostajs/audit/repositories/audit-log.repository'
+
+// 1) Ajouter AuditLogSchema à VOS schémas (migration crée la table `auditlogs`).
+//    ⚠ relation `userId → User` (m2o, requise) : l'hôte DOIT exposer un schéma `name:"User"`.
+// 2) Injecter VOTRE dialecte (construit depuis VOTRE .env) — une fois :
+configureAudit({ dialect: await getOrm() })
+// 3) Tracer (fire-and-forget) :
+await logAudit({ userId, userName, userRole, action: 'order.create', module: 'commandes', resource: '2026-…' })
+// 4) Consulter : new AuditLogRepository(await getOrm()).findPaginated(filters) → { data, total } ; UI native.
+```
+> En test : importer par SOUS-CHEMINS (la racine charge AuditPage → lucide-react). Voir @mostajs/mjs-unit.
+
+## DÉPEND DE (depuis 2.3.0 — « le moins dépendant »)
+- **Aucune dépendance dure** (`dependencies: {}`).
+- Peers : **@mostajs/orm** (requis — l'hôte le fournit → copie unique, pas de double-package) ;
+  **@mostajs/data-plug** (optionnel — uniquement pour le repli `.env`) ; @mostajs/menu/socle/ui, lucide-react,
+  next, react (tous optionnels, UI seulement).
+- ❌ Retirés : @mostajs/net (inutilisé), @mostajs/octoswitcher (→ remplacé par data-plug, optionnel).
 
 ## PIÈGES
 - logAudit est volontairement fire-and-forget : il avale ses propres erreurs (échec d'écriture audit → silencieux). Ne pas s'en servir comme garantie transactionnelle ; ne pas l'attendre comme bloquant critique.

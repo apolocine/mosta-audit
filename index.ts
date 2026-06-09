@@ -4,6 +4,12 @@
 // Core
 export { logAudit, getAuditUser } from './lib/audit'
 
+// Configuration (DI) : l'hôte injecte son dialecte ORM (depuis son .env) — voie recommandée.
+export { configureAudit, getAuditRepo, resetAuditRepo, type IAuditLogRepository } from './lib/audit-factory'
+
+// Volatile debug logger (complement de logAudit pour la trace pm2/stdout)
+export { dlog, dwarn, createLogger, isDebugEnabled, type ScopedLogger } from './lib/debug-log'
+
 // Repository & Schema
 export { AuditLogRepository } from './repositories/audit-log.repository'
 export { AuditLogSchema } from './schemas/audit-log.schema'
